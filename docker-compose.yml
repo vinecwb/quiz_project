@@ -1,0 +1,15 @@
+version: "3"
+
+services: 
+  db-postgres-quiz:
+    image: postgres:alpine
+    ports:
+      - "5435:5432"
+    container_name: "db-postgres-quiz"
+    restart: always
+    volumes:
+      - ./banco-de-dados-events:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
