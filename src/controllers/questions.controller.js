@@ -6,9 +6,11 @@ import {
   getQuestionById,
   getQuestionsBySubjectId,
 } from "../repositories/questions.repository.js";
+import { questionSchema } from "../validators/question.validator.js";
 
 export const create = async (req, res) => {
   try {
+    questionSchema.parse(req.body);
     const question = await createQuestion(req.body);
     res.status(201).send(question);
   } catch (error) {

@@ -1,11 +1,10 @@
-// auth.controller.js
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import { userSchema } from "../validators/user.validator.js";
 import { prisma } from "../services/prisma.js";
 
 const secretKey = process.env.JWT_SECRET || "defaultSecretKey";
 
-// Login Controller
 export const login = async (req, res) => {
   const { email, password } = req.body;
   try {
@@ -32,7 +31,6 @@ export const login = async (req, res) => {
   }
 };
 
-// Middleware to Protect Routes
 export const authenticateToken = (req, res, next) => {
   const token = req.headers.authorization?.split(" ")[1];
   if (!token) {
@@ -48,10 +46,10 @@ export const authenticateToken = (req, res, next) => {
   }
 };
 
-// Register Controller
 export const register = async (req, res) => {
   const { name, lastname, email, password, isTeacher } = req.body;
   try {
+    userSchema.parse(req.body);
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await prisma.user.create({
       data: {

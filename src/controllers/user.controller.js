@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import { userValidation } from "../validations/user.validation.js";
+import { userSchema } from "../validators/user.validator.js";
 import {
   createUser,
   getAll,
@@ -10,7 +10,7 @@ import {
 
 export const create = async (req, res) => {
   try {
-    await userValidation.validate(req.body);
+    await userSchema.validate(req.body);
     const hashPassword = await bcrypt.hash(req.body.password, 10);
     req.body.password = hashPassword;
     const user = await createUser(req.body);
