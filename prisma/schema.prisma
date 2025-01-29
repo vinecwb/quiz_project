@@ -24,20 +24,37 @@ model Question {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  subject Subject @relation(fields: [subjectId], references: [id])
+  subject    Subject      @relation(fields: [subjectId], references: [id])
+  TestResult TestResult[]
 
   @@map("questions")
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  name      String
-  lastname  String
-  email     String   @unique
-  password  String
-  isTeacher Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         Int          @id @default(autoincrement())
+  name       String
+  lastname   String
+  email      String       @unique
+  password   String
+  isTeacher  Boolean      @default(false)
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  TestResult TestResult[]
 
   @@map("user_logins")
+}
+
+model TestResult {
+  id            Int      @id @default(autoincrement())
+  userId        Int
+  questionId    Int
+  givenAnswer   String
+  correctAnswer String
+  score         Float
+  createdAt     DateTime @default(now())
+
+  user     User     @relation(fields: [userId], references: [id])
+  question Question @relation(fields: [questionId], references: [id])
+
+  @@map("test_results")
 }
