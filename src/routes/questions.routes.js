@@ -1,3 +1,4 @@
+import { Router } from "express";
 import {
   create,
   update,
@@ -7,14 +8,13 @@ import {
   getBySubjectId,
 } from "../controllers/questions.controller.js";
 
-const questionRoutes = (app) => {
-  app.post("/questions", create);
-  app.get("/questions", getAll);
-  app.get("/questions/:id", getById);
-  app.get("/questions/subject/:subjectId", getBySubjectId);
-  app.put("/questions/:id", update);
+const router = Router();
 
-  app.delete("/questions/:id", remove);
-};
+router.post("/questions", create);
+router.get("/questions", getAll);
+router.get("/questions/:id", getById);
+router.get("/questions/subject/:subjectId", getBySubjectId);
+router.put("/questions/:id", update);
+router.delete("/questions/:id", remove);
 
-export default questionRoutes;
+export default router;

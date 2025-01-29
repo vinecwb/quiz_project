@@ -1,8 +1,9 @@
+import { Router } from "express";
 import { startQuiz, submitQuiz } from "../controllers/quiz.controller.js";
 
-const quizRoutes = (app) => {
-  app.get("/quiz/start", startQuiz);
-  app.post("/quiz/submit", submitQuiz);
-};
+const router = Router();
 
-export default quizRoutes;
+router.get("/quiz/start", startQuiz);
+router.post("/quiz/submit", submitQuiz);
+
+export default router;

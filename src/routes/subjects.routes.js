@@ -1,3 +1,4 @@
+import { Router } from "express";
 import {
   create,
   getAllQuestions,
@@ -6,12 +7,12 @@ import {
   deleteSubjectById,
 } from "../controllers/subjects.controller.js";
 
-const subjectRoutes = (app) => {
-  app.post("/subjects", create);
-  app.get("/subjects", getAllQuestions);
-  app.get("/subjects/:id", getSubjectById);
-  app.put("/subjects/:id", update);
-  app.delete("/subjects/:id", deleteSubjectById);
-};
+const router = Router();
 
-export default subjectRoutes;
+router.post("/subjects", create);
+router.get("/subjects", getAllQuestions);
+router.get("/subjects/:id", getSubjectById);
+router.put("/subjects/:id", update);
+router.delete("/subjects/:id", deleteSubjectById);
+
+export default router;
