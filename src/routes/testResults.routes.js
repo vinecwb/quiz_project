@@ -1,11 +1,13 @@
+import { Router } from "express";
 import {
   submitTest,
   getUserResults,
 } from "../controllers/testResults.controller.js";
+import { authenticateToken } from "../controllers/auth.controller.js";
 
-const testResultsRoutes = (app) => {
-  app.post("/test-results", submitTest);
-  app.get("/test-results/:userId", getUserResults);
-};
+const router = Router();
 
-export default testResultsRoutes;
+router.post("/test-results", authenticateToken, submitTest);
+router.get("/test-results/:userId", authenticateToken, getUserResults);
+
+export default router;
