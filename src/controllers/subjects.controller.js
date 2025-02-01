@@ -7,6 +7,11 @@ import {
 } from "../repositories/subjects.repository.js";
 
 export const create = async (req, res) => {
+  const { name } = req.body;
+  if (!name) {
+    return res.status(400).json({ error: 'O campo "name" é obrigatório.' });
+  }
+
   try {
     const subject = await createSubject(req.body);
     res.status(201).send(subject);
@@ -16,7 +21,7 @@ export const create = async (req, res) => {
   }
 };
 
-export const getAllQuestions = async (req, res) => {
+export const get = async (req, res) => {
   try {
     const subjects = await getAll();
     res.status(200).send(subjects);

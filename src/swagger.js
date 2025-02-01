@@ -14,6 +14,68 @@ const options = {
         url: "http://localhost:3001",
       },
     ],
+    components: {
+      schemas: {
+        Quiz: {
+          type: 'object',
+          properties: {
+            id: {
+              type: 'integer',
+            },
+            title: {
+              type: 'string',
+            },
+            subjectId: {
+              type: 'integer',
+            },
+            questions: {
+              type: 'array',
+              items: {
+                $ref: '#/components/schemas/Question'
+              }
+            }
+          }
+        },
+        Question: {
+          type: 'object',
+          properties: {
+            id: {
+              type: 'integer',
+            },
+            text: {
+              type: 'string',
+            },
+            correctAnswer: {
+              type: 'string',
+            },
+            options: {
+              type: 'string',
+              description: 'Opções armazenadas como JSON (string)',
+            }
+          }
+        },
+        Result: {
+          type: 'object',
+          properties: {
+            id: {
+              type: 'integer',
+            },
+            quizId: {
+              type: 'integer',
+            },
+            userId: {
+              type: 'integer',
+            },
+            correct: {
+              type: 'integer',
+            },
+            total: {
+              type: 'integer',
+            }
+          }
+        }
+      }
+    }
   },
   apis: ["./src/routes/*.js"],
 };

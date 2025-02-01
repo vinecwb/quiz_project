@@ -1,7 +1,7 @@
 import { Router } from "express";
 import {
   create,
-  getAllQuestions,
+  get,
   getSubjectById,
   update,
   deleteSubjectById,
@@ -37,7 +37,7 @@ router.post("/subjects", create);
  *       200:
  *         description: Lista de matérias retornada com sucesso
  */
-router.get("/subjects", getAllQuestions);
+router.get("/subjects", get);
 
 /**
  * @swagger

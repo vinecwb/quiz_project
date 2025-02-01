@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { userSchema } from "../validators/user.validator.js";
 import { prisma } from "../services/prisma.js";
+import {ZodError} from "zod";
 
 const secretKey = process.env.JWT_SECRET || "defaultSecretKey";
 
@@ -64,6 +65,11 @@ export const register = async (req, res) => {
     res.status(201).json({ message: "User registered successfully", user });
   } catch (error) {
     console.error("Registration error:", error);
+
+    if (error instanceof ZodError){
+      return res.status(400).json({ errors: error.errors })
+    }
+
     res.status(500).json({ error: "Internal server error" });
   }
 };

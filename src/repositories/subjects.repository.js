@@ -4,13 +4,9 @@ export const createSubject = async (data) => {
   const subject = await prisma.subject.create({
     data: {
       name: data.name,
-      questions: {
-        create: data.questions,
-      },
     },
     select: {
       name: true,
-      questions: true,
     },
   });
 
@@ -21,8 +17,7 @@ export const getAll = async () => {
   const subjects = await prisma.subject.findMany({
     select: {
       id: true,
-      name: true,
-      questions: true,
+      name: true
     },
   });
   return subjects;
@@ -44,27 +39,10 @@ export const updateSubject = async (id, data) => {
     where: { id }, // Encontrar o subject pelo id
     data: {
       name: data.name, // Atualiza o nome do subject
-      questions: {
-        // Atualiza as questões associadas
-        upsert: data.questions.map((question) => ({
-          where: { id: question.id || -1 }, // Verifica se a questão já existe
-          update: {
-            question: question.question,
-            options: question.options,
-            answer: question.answer,
-          },
-          create: {
-            question: question.question,
-            options: question.options,
-            answer: question.answer,
-          },
-        })),
-      },
     },
     select: {
       id: true,
       name: true,
-      questions: true,
     },
   });
 

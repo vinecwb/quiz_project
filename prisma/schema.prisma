@@ -7,54 +7,48 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Subject {
-  id        Int        @id @default(autoincrement())
-  name      String     @unique
-  questions Question[]
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  lastname  String
+  email     String   @unique
+  password  String
+  isTeacher Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  results   Result[]
+}
 
-  @@map("subjects")
+model Subject {
+  id      Int    @id @default(autoincrement())
+  name    String @unique
+  quizzes Quiz[]
+}
+
+model Quiz {
+  id        Int        @id @default(autoincrement())
+  title     String
+  subjectId Int
+  subject   Subject    @relation(fields: [subjectId], references: [id])
+  questions Question[]
 }
 
 model Question {
-  id        Int      @id @default(autoincrement())
-  subjectId Int
-  question  String
-  options   String[]
-  answer    String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  subject    Subject      @relation(fields: [subjectId], references: [id])
-  TestResult TestResult[]
-
-  @@map("questions")
-}
-
-model User {
-  id         Int          @id @default(autoincrement())
-  name       String
-  lastname   String
-  email      String       @unique
-  password   String
-  isTeacher  Boolean      @default(false)
-  createdAt  DateTime     @default(now())
-  updatedAt  DateTime     @updatedAt
-  TestResult TestResult[]
-
-  @@map("user_logins")
-}
-
-model TestResult {
   id            Int      @id @default(autoincrement())
-  userId        Int
-  questionId    Int
-  givenAnswer   String
+  text          String
   correctAnswer String
-  score         Float
+  options       String // Opções armazenadas em JSON (ex: '["opcao1", "opcao2", "opcao3"]')
+  quizId        Int
+  quiz          Quiz     @relation(fields: [quizId], references: [id])
   createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
 
-  user     User     @relation(fields: [userId], references: [id])
-  question Question @relation(fields: [questionId], references: [id])
-
-  @@map("test_results")
+model Result {
+  id      Int  @id @default(autoincrement())
+  quizId  Int
+  userId  Int
+  correct Int
+  total   Int
+  user    User @relation(fields: [userId], references: [id])
 }
