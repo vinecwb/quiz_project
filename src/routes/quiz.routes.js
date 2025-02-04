@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { create, list, getQuiz, update, remove, attempt } from "../controllers/quiz.controller.js";
+import { create, listTeacher, listStudent, getQuiz, update, remove, attempt } from "../controllers/quiz.controller.js";
 
 const router = Router();
 
@@ -17,6 +17,8 @@ const router = Router();
  *   post:
  *     summary: Cria um novo quiz
  *     tags: [Quizzes]
+ *     security:
+ *        - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -57,6 +59,25 @@ const router = Router();
  *                   type: string
  *                 quiz:
  *                   $ref: '#/components/schemas/Quiz'
+ *       403:
+ *         description: Não autorizado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       400:
+ *         description: Campos obrigatórios ausentes
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *
  *       500:
  *         description: Erro interno no servidor
  */
@@ -64,10 +85,23 @@ router.post('/quiz', create);
 
 /**
  * @swagger
- * /quiz:
+ * /quiz/teacher:
  *   get:
- *     summary: Lista todos os quizzes
+ *     summary: Lista todos os quizzes do professor
  *     tags: [Quizzes]
+ *     security:
+ *        - bearerAuth: []
+ *     parameters:
+ *         - in: query
+ *           name: title
+ *           schema:
+ *             type: string
+ *           description: Filtro opcional para o título do quiz.
+ *         - in: query
+ *           name: subjectId
+ *           schema:
+ *             type: integer
+ *           description: Filtro opcional para o ID da matéria.
  *     responses:
  *       200:
  *         description: Lista de quizzes
@@ -78,7 +112,38 @@ router.post('/quiz', create);
  *               items:
  *                 $ref: '#/components/schemas/Quiz'
  */
-router.get('/quiz', list);
+router.get('/quiz/teacher', listTeacher);
+
+/**
+ * @swagger
+ * /quiz/student:
+ *   get:
+ *     summary: Lista todos os quizzes para os alunos
+ *     tags: [Quizzes]
+ *     security:
+ *        - bearerAuth: []
+ *     parameters:
+ *         - in: query
+ *           name: title
+ *           schema:
+ *             type: string
+ *           description: Filtro opcional para o título do quiz.
+ *         - in: query
+ *           name: subjectId
+ *           schema:
+ *             type: integer
+ *           description: Filtro opcional para o ID da matéria.
+ *     responses:
+ *       200:
+ *         description: Lista de quizzes
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/QuizStudent'
+ */
+router.get('/quiz/student', listStudent);
 
 /**
  * @swagger
@@ -107,7 +172,7 @@ router.get('/quiz/:id', getQuiz);
 
 /**
  * @swagger
- * /api/quiz/{id}:
+ * /quiz/{id}:
  *   put:
  *     summary: Atualiza os dados básicos de um quiz
  *     tags: [Quizzes]
@@ -148,7 +213,7 @@ router.put('/quiz/:id', update);
 
 /**
  * @swagger
- * /api/quiz/{id}:
+ * /quiz/{id}:
  *   delete:
  *     summary: Remove um quiz
  *     tags: [Quizzes]
@@ -176,7 +241,7 @@ router.delete('/quiz/:id', remove);
 
 /**
  * @swagger
- * /api/quiz/{id}/attempt:
+ * /quiz/{id}/attempt:
  *   post:
  *     summary: Realiza a tentativa de um quiz e insere o resultado
  *     tags: [Quizzes]
@@ -199,6 +264,9 @@ router.delete('/quiz/:id', remove);
  *             properties:
  *               answers:
  *                 type: object
+ *                 example:
+ *                    "0": "respostaA"
+ *                    "1": "respostaC"
  *                 description: Objeto com as respostas, onde as chaves são os índices das perguntas
  *               userId:
  *                 type: integer
@@ -214,7 +282,7 @@ router.delete('/quiz/:id', remove);
  *                 message:
  *                   type: string
  *                 result:
- *                   type: object
+ *                   $ref: '#/components/schemas/Result'
  *       500:
  *         description: Erro interno no servidor
  */

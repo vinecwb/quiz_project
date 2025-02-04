@@ -16,6 +16,73 @@ const options = {
     ],
     components: {
       schemas: {
+        User: {
+          type: 'object',
+          properties: {
+            id: {
+              type: 'integer',
+              example: 1,
+            },
+            name: {
+              type: 'string',
+              example: 'João',
+            },
+            lastname: {
+              type: 'string',
+              example: 'Silva',
+            },
+            email: {
+              type: 'string',
+              example: 'joao.silva@example.com',
+            },
+            isTeacher: {
+              type: 'boolean',
+              example: false,
+            }
+          },
+        },
+        // Schema para a resposta de registro/login de usuário
+        UserResponse: {
+          type: 'object',
+          properties: {
+            message: {
+              type: 'string',
+              example: 'User registered successfully',
+            },
+            user: {
+              $ref: '#/components/schemas/User'
+            }
+          }
+        },
+        LoginResponse: {
+          type: 'object',
+          properties: {
+            message: {
+              type: 'string',
+              example: 'Login successful',
+            },
+            token: {
+              type: 'string',
+              example: '1a2e5g6a...'
+            }
+          }
+        },
+        // Schema para erro
+        ErrorResponse: {
+          type: 'object',
+          properties: {
+            error: {
+              type: 'string',
+              example: 'Internal server error'
+            },
+            errors: {
+              type: 'array',
+              items: {
+                type: 'object'
+              }
+            }
+          }
+        },
         Quiz: {
           type: 'object',
           properties: {
@@ -27,6 +94,29 @@ const options = {
             },
             subjectId: {
               type: 'integer',
+            },
+            questions: {
+              type: 'array',
+              items: {
+                $ref: '#/components/schemas/Question'
+              }
+            }
+          }
+        },
+        QuizStudent: {
+          type: 'object',
+          properties: {
+            id: {
+              type: 'integer',
+            },
+            title: {
+              type: 'string',
+            },
+            subjectId: {
+              type: 'integer',
+            },
+            solved: {
+              type: 'boolean',
             },
             questions: {
               type: 'array',
@@ -50,6 +140,7 @@ const options = {
             },
             options: {
               type: 'string',
+              example: ["1", "2", "3"],
               description: 'Opções armazenadas como JSON (string)',
             }
           }

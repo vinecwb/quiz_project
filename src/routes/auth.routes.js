@@ -8,30 +8,54 @@ const router = Router();
  * /auth/register:
  *   post:
  *     summary: Registra um novo usuário
- *     tags: [Auth]
+ *     tags: [Users]
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - name
+ *               - lastname
+ *               - email
+ *               - password
+ *               - isTeacher
  *             properties:
  *               name:
  *                 type: string
+ *                 example: "João"
  *               lastname:
  *                 type: string
+ *                 example: "Silva"
  *               email:
  *                 type: string
- *                 format: email
+ *                 example: "joao.silva@example.com"
  *               password:
  *                 type: string
+ *                 example: "123456"
  *               isTeacher:
  *                 type: boolean
+ *                 example: false
  *     responses:
  *       201:
  *         description: Usuário registrado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserResponse'
  *       400:
  *         description: Erro de validação
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       500:
+ *         description: Erro interno no servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
 router.post("/auth/register", register);
 
@@ -39,25 +63,43 @@ router.post("/auth/register", register);
  * @swagger
  * /auth/login:
  *   post:
- *     summary: Faz login e retorna um token JWT
- *     tags: [Auth]
+ *     summary: Realiza o login de um usuário
+ *     tags: [Users]
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - email
+ *               - password
  *             properties:
  *               email:
  *                 type: string
- *                 format: email
+ *                 example: "joao.silva@example.com"
  *               password:
  *                 type: string
+ *                 example: "123456"
  *     responses:
  *       200:
- *         description: Login bem-sucedido
+ *         description: Login realizado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/LoginResponse'
  *       401:
- *         description: Credenciais inválidas
+ *         description: Invalid credentials
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
 router.post("/auth/login", login);
 

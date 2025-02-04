@@ -1,10 +1,11 @@
 import { prisma } from "../services/prisma.js";
 
-export const createQuiz = async ({ title, subjectId, questions }) => {
+export const createQuiz = async ({ title, subjectId, teacherId, questions }) => {
   const quiz = await prisma.quiz.create({
     data: {
       title,
       subject: { connect: { id: subjectId } },
+      user: { connect: { id: teacherId }},
       questions: {
         create: questions.map(q => ({
           text: q.text,
@@ -26,10 +27,70 @@ export const getQuizById = async (id) => {
   });
 };
 
-export const listQuizzes = async () => {
+export const listQuizzesTeacher = async ({ teacherId, title, subjectId }) => {
+  // Cria um objeto de filtro para a consulta
+  const filter = {
+    teacherId: teacherId, // Filtra pelo professor autenticado
+  };
+
+  if (title) {
+    // Busca por título de forma parcial (insensível a maiúsculas/minúsculas)
+    filter.title = { contains: title, mode: 'insensitive' };
+  }
+
+  if (subjectId) {
+    // Converte subjectId para número e filtra
+    filter.subjectId = Number(subjectId);
+  }
+
+  // Consulta os quizzes no banco de dados, incluindo as relações com subject e questions
   return await prisma.quiz.findMany({
+    where: filter,
     include: { subject: true, questions: true }
   });
+};
+
+export const listStudentQuizzes = async ({ userId, title, subjectId }) => {
+  const filter = {};
+
+  if (title) {
+    filter.title = { contains: title, mode: 'insensitive' };
+  }
+  if (subjectId) {
+    filter.subjectId = Number(subjectId);
+  }
+
+  // Consulta todos os quizzes (com filtros, se informados)
+  const quizzes = await prisma.quiz.findMany({
+    where: filter,
+    include: {
+      subject: true,
+      questions: true
+    }
+  });
+
+  // Obter os IDs dos quizzes
+  const quizIds = quizzes.map(q => q.id);
+
+  // Buscar em lote os resultados para o usuário
+  const results = await prisma.result.findMany({
+    where: {
+      quizId: { in: quizIds },
+      userId: userId
+    }
+  });
+
+  // Criar um mapa para verificar rapidamente se o quiz foi resolvido
+  const resultsMap = results.reduce((acc, result) => {
+    acc[result.quizId] = result;
+    return acc;
+  }, {});
+
+  // Adicionar a propriedade 'solved' em cada quiz
+  return quizzes.map(quiz => ({
+    ...quiz,
+    solved: Boolean(resultsMap[quiz.id])
+  }));
 };
 
 export const updateQuiz = async (id, { title, subjectId }) => {

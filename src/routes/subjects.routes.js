@@ -21,6 +21,11 @@ const router = Router();
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - name
+ *             properties:
+ *               name:
+ *                 type: string
  *     responses:
  *       201:
  *         description: Matéria criada com sucesso
