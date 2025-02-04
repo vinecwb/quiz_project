@@ -6,6 +6,7 @@ export const createSubject = async (data) => {
       name: data.name,
     },
     select: {
+      id: true,
       name: true,
     },
   });
