@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { create, listTeacher, listStudent, getQuiz, update, remove, attempt } from "../controllers/quiz.controller.js";
+import { create, listTeacher, listStudent, getQuiz, update, remove, attempt, listQuizGrades } from "../controllers/quiz.controller.js";
 
 const router = Router();
 
@@ -287,5 +287,61 @@ router.delete('/quiz/:id', remove);
  *         description: Erro interno no servidor
  */
 router.post('/quiz/:id/attempt', attempt);
+
+/**
+ * @swagger
+ * /quiz/grades:
+ *   get:
+ *     summary: Lista notas dos quizzes
+ *     description: >
+ *       Se o usuário for professor, retorna uma lista com o nome do quiz, matéria, nome do aluno e a nota,
+ *       permitindo filtrar por quizName, subject e student.
+ *       Se o usuário for aluno, retorna todos os quizzes respondidos por ele com suas respectivas notas.
+ *     tags: [Quizzes]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: quizName
+ *         schema:
+ *           type: string
+ *         description: Filtro opcional para o nome do quiz (apenas para professores).
+ *       - in: query
+ *         name: subject
+ *         schema:
+ *           type: string
+ *         description: Filtro opcional para o nome da matéria (apenas para professores).
+ *       - in: query
+ *         name: student
+ *         schema:
+ *           type: string
+ *         description: Filtro opcional para o nome do aluno (apenas para professores).
+ *     responses:
+ *       200:
+ *         description: Lista de notas dos quizzes
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   quizTitle:
+ *                     type: string
+ *                   subject:
+ *                     type: string
+ *                   studentName:
+ *                     type: string
+ *                   grade:
+ *                     type: object
+ *                     properties:
+ *                       correct:
+ *                         type: integer
+ *                       total:
+ *                         type: integer
+ *       500:
+ *         description: Erro interno no servidor
+ */
+router.get('/quiz/grades', listQuizGrades);
 
 export default router;

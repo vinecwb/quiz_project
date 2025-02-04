@@ -10,6 +10,8 @@ import {
   updateQuiz,
   deleteQuiz,
   attemptQuiz,
+  getTeacherQuizGrades,
+  getStudentQuizGrades
 } from "../repositories/quiz.repository.js";
 
 export const create = async (req, res) => {
@@ -162,5 +164,32 @@ export const submitQuiz = async (req, res) => {
     res.status(200).json({ score, message: `Your score is ${score}/10` });
   } catch (error) {
     res.status(500).json({ error: "Failed to evaluate quiz" });
+  }
+};
+
+export const listQuizGrades = async (req, res) => {
+  try {
+    // Extrai e verifica o token para obter os dados do usuário
+    const decoded = getDecodedToken(req);
+    const userId = decoded.id;
+
+    // Se o usuário for professor, aplica os filtros para listar os quizzes criados por ele
+    if (decoded.isTeacher) {
+      const { quizName, subject, student } = req.query;
+      const teacherResults = await getTeacherQuizGrades({
+        teacherId: userId,
+        quizName,
+        subject,
+        student
+      });
+      return res.status(200).json(teacherResults);
+    } else {
+      // Se não for professor, trata como aluno: lista todos os quizzes respondidos por ele
+      const studentResults = await getStudentQuizGrades(userId);
+      return res.status(200).json(studentResults);
+    }
+  } catch (error) {
+    console.error("Error listing quiz grades:", error);
+    return res.status(500).json({ error: error.message || "Internal server error" });
   }
 };
