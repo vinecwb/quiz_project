@@ -64,8 +64,7 @@ export const listStudentQuizzes = async ({ userId, title, subjectId }) => {
   const quizzes = await prisma.quiz.findMany({
     where: filter,
     include: {
-      subject: true,
-      questions: true
+      subject: true
     }
   });
 

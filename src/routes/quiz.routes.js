@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { create, listTeacher, listStudent, update, remove, attempt, listQuizGrades } from "../controllers/quiz.controller.js";
+import { create, listTeacher, listStudent, update, remove, attempt, listQuizGrades, getQuiz } from "../controllers/quiz.controller.js";
 
 const router = Router();
 
@@ -9,7 +9,6 @@ const router = Router();
  *   name: Quizzes
  *   description: Endpoints para gerenciamento de quizzes
  */
-
 
 /**
  * @swagger
@@ -144,31 +143,6 @@ router.get('/quiz/teacher', listTeacher);
  *                 $ref: '#/components/schemas/QuizStudent'
  */
 router.get('/quiz/student', listStudent);
-
-/**
- * @swagger
- * /quiz/{id}:
- *   get:
- *     summary: Retorna os detalhes de um quiz pelo ID
- *     tags: [Quizzes]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *         description: ID do quiz
- *     responses:
- *       200:
- *         description: Detalhes do quiz
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Quiz'
- *       404:
- *         description: Quiz não encontrado
- */
-// router.get('/quiz/:id', getQuiz);
 
 /**
  * @swagger
@@ -343,5 +317,30 @@ router.post('/quiz/:id/attempt', attempt);
  *         description: Erro interno no servidor
  */
 router.get('/quiz/grades', listQuizGrades);
+
+/**
+ * @swagger
+ * /quiz/{id}:
+ *   get:
+ *     summary: Retorna os detalhes de um quiz pelo ID
+ *     tags: [Quizzes]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID do quiz
+ *     responses:
+ *       200:
+ *         description: Detalhes do quiz
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Quiz'
+ *       404:
+ *         description: Quiz não encontrado
+ */
+router.get('/quiz/:id', getQuiz);
 
 export default router;
