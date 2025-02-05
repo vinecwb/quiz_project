@@ -34,7 +34,7 @@ model Quiz {
   subject   Subject    @relation(fields: [subjectId], references: [id])
   user      User       @relation(fields: [teacherId], references: [id])
   questions Question[]
-  Result    Result[]
+  results   Result[]
 }
 
 model Question {

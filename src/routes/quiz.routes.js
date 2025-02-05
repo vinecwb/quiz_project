@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { create, listTeacher, listStudent, getQuiz, update, remove, attempt, listQuizGrades } from "../controllers/quiz.controller.js";
+import { create, listTeacher, listStudent, update, remove, attempt, listQuizGrades } from "../controllers/quiz.controller.js";
 
 const router = Router();
 
@@ -168,7 +168,7 @@ router.get('/quiz/student', listStudent);
  *       404:
  *         description: Quiz não encontrado
  */
-router.get('/quiz/:id', getQuiz);
+// router.get('/quiz/:id', getQuiz);
 
 /**
  * @swagger
