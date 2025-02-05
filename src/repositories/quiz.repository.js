@@ -118,12 +118,12 @@ export const attemptQuiz = async (id, answers, userId) => {
 
   let correctCount = 0;
 
-  quiz.questions.forEach((question, index) => {
+  quiz.questions.forEach((question) => {
     // Converte as opções armazenadas (que estão em formato JSON) para um array, se necessário.
     const options = JSON.parse(question.options);
 
-    // Padroniza a resposta do usuário e a resposta correta para evitar problemas com espaços ou letras maiúsculas/minúsculas.
-    const userAnswer = answers[index] ? answers[index].trim().toLowerCase() : "";
+    // Recupera a resposta do usuário utilizando o id da questão
+    const userAnswer = answers[question.id] ? answers[question.id].trim().toLowerCase() : "";
     const correctAnswer = question.correctAnswer ? question.correctAnswer.trim().toLowerCase() : "";
 
     if (userAnswer && userAnswer === correctAnswer) {
